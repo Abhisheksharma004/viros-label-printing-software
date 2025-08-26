@@ -6,11 +6,15 @@ Solution:
 
 Login:
   admin / admin (opens directly to Print Label tab)
-  other users (opens to Design Label tab)
+  other users (opens to Print Label tab)
+
+Security:
+  Design Label tab requires password: "NewViros##9141" (applies to ALL users including admin)
 
 Features:
 - Dashboard with 3 tabs: Design Label, Print Label, Reports
 - Admin user login opens directly to Print Label tab for quick access
+- Password protection on Design Label tab for ALL users (including admin)
 - Design: browse .prn, edit, live preview via Labelary API (ZPL only), scrollable preview panel
 - Print Label: select design, quantity, start serial, preview, print (stub), logs saved
 - Reports: view print logs, filter by design name or serial, reprint selected
