@@ -68,8 +68,8 @@ namespace LabelPrinterApp.Services
 
                 var sample = conn.CreateCommand();
                 sample.CommandText = "INSERT INTO designs (name, prn_content, width_inches, height_inches, dpmm, created_at) VALUES (@n,@p,@w,@h,@d,@c);";
-                sample.Parameters.AddWithValue("@n", "Sample ZPL with Serial Formats");
-                sample.Parameters.AddWithValue("@p", "^XA\n^FO50,50^A0N,35,35^FDSerial: {SERIAL}^FS\n^FO50,100^A0N,30,30^FD2-digit: {SERIAL1}^FS\n^FO50,150^A0N,30,30^FD3-digit: {SERIAL2}^FS\n^FO50,200^A0N,30,30^FD4-digit: {SERIAL3}^FS\n^FO50,250^A0N,25,25^FDDate: {DATE}^FS\n^FO50,300^A0N,25,25^FDTime: {TIME} Month: {CHAR_MM}^FS\n^XZ");
+                sample.Parameters.AddWithValue("@n", "Sample ZPL with All Shortcut Codes");
+                sample.Parameters.AddWithValue("@p", "^XA\n^FO50,50^A0N,35,35^FDSerial: {SERIAL}^FS\n^FO50,100^A0N,30,30^FD2-digit: {SERIAL1}^FS\n^FO50,150^A0N,30,30^FD3-digit: {SERIAL2}^FS\n^FO50,200^A0N,30,30^FD4-digit: {SERIAL3}^FS\n^FO50,250^A0N,25,25^FDDate: {DATE}^FS\n^FO50,300^A0N,25,25^FDTime: {TIME} Month: {CHAR_MM}^FS\n^FO50,350^A0N,25,25^FDCustom: {CUSTOM_TEXT}^FS\n^XZ");
                 sample.Parameters.AddWithValue("@w", 4.0);
                 sample.Parameters.AddWithValue("@h", 6.0);
                 sample.Parameters.AddWithValue("@d", 8);

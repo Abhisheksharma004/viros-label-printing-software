@@ -26,15 +26,15 @@ namespace LabelPrinterApp.UI
         public DesignForm()
         {
             Dock = DockStyle.Fill;
-            var left = new Panel { Dock = DockStyle.Left, Width = 560, Padding = new Padding(10) };
+            var left = new Panel { Dock = DockStyle.Left, Width = 480, Padding = new Padding(10) };
             var right = new Panel { Dock = DockStyle.Fill, Padding = new Padding(10) };
 
             var lblName = new Label{ Text="Design Name", Left=10, Top=10, Width=120 };
-            txtName.SetBounds(10, 35, 520, 24);
+            txtName.SetBounds(10, 35, 440, 24);
 
             var lblPrn = new Label{ Text="PRN Code", Left=10, Top=70, Width=100 };
             txtPrnEditor.Multiline = true; txtPrnEditor.ScrollBars = ScrollBars.Both; txtPrnEditor.AcceptsReturn = true;
-            txtPrnEditor.SetBounds(10, 95, 520, 360);
+            txtPrnEditor.SetBounds(10, 95, 440, 360);
             txtPrnEditor.TextChanged += (s,e)=> { debounce.Stop(); debounce.Start(); };
 
             btnBrowse.Text = "Browse PRN"; btnBrowse.SetBounds(10, 470, 100, 30);
@@ -49,26 +49,34 @@ namespace LabelPrinterApp.UI
             btnShortcutHelp.Text = "Shortcut Codes"; btnShortcutHelp.SetBounds(10, 510, 120, 30);
             btnShortcutHelp.Click += (s,e)=> ShowShortcutHelp();
 
-            btnSave.Text = "Save Design"; btnSave.SetBounds(370, 470, 100, 30);
+            btnSave.Text = "Save Design"; btnSave.SetBounds(140, 510, 100, 30);
             btnSave.Click += (s,e)=> SaveDesign();
 
             left.Controls.AddRange(new Control[]{lblName, txtName, lblPrn, txtPrnEditor, btnBrowse, btnPreview, btnUploadPreview, btnShortcutHelp, btnSave});
 
-            // Create a full-screen preview panel that uses all available space
-            var previewPanel = new Panel { Dock = DockStyle.Fill, BackColor = Color.LightGray, Padding = new Padding(15) };
+            // Create a preview panel that properly fits the image to screen
+            var previewPanel = new Panel { 
+                Dock = DockStyle.Fill, 
+                BackColor = Color.LightGray, 
+                Padding = new Padding(10),
+                AutoScroll = false  // Ensure no scrollbars appear
+            };
+            
             previewBox = new PictureBox 
             { 
                 Dock = DockStyle.Fill,
-                SizeMode = PictureBoxSizeMode.Zoom,
+                SizeMode = PictureBoxSizeMode.Zoom,  // Maintains aspect ratio while fitting to container
                 BackColor = Color.White,
-                BorderStyle = BorderStyle.FixedSingle
+                BorderStyle = BorderStyle.FixedSingle,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
             };
             
             // Add resize handler to ensure preview always fits properly
             previewPanel.Resize += (s, e) => {
                 if (previewBox.Image != null)
                 {
-                    // Force refresh of zoom calculation
+                    // Force refresh of zoom calculation to fit new size
+                    previewBox.Refresh();
                     previewBox.Invalidate();
                 }
             };
@@ -216,14 +224,14 @@ namespace LabelPrinterApp.UI
 
         private Image CreateEmptyPreview()
         {
-            // Create a standard preview size that's easier to display
-            int width = 600;
-            int height = 400;
+            // Create a standard preview size that fits well in most screens
+            int width = 500;
+            int height = 300;
             var bmp = new Bitmap(width, height);
             using var g = Graphics.FromImage(bmp);
             g.Clear(Color.White);
             
-            using var font = new Font("Arial", 24, FontStyle.Bold);
+            using var font = new Font("Arial", 20, FontStyle.Bold);
             string message = "Enter PRN Code to Preview";
             var size = g.MeasureString(message, font);
             g.DrawString(message, font, Brushes.Gray, 
@@ -234,16 +242,16 @@ namespace LabelPrinterApp.UI
 
         private Image CreateFormattedPreview(string prn, PrnType type)
         {
-            // Create a reasonable preview size
-            int width = 600;
-            int height = 400;
+            // Create a reasonable preview size that fits on screen
+            int width = 500;
+            int height = 350;
             var bmp = new Bitmap(width, height);
             using var g = Graphics.FromImage(bmp);
             g.Clear(Color.White);
             
             // Draw header
-            using var headerFont = new Font("Arial", 16, FontStyle.Bold);
-            using var contentFont = new Font("Consolas", 9);
+            using var headerFont = new Font("Arial", 14, FontStyle.Bold);
+            using var contentFont = new Font("Consolas", 8);
             
             string header = type == PrnType.ZPL 
                 ? "ZPL Preview (API unavailable - showing code preview)" 
@@ -253,7 +261,7 @@ namespace LabelPrinterApp.UI
             
             // Draw content preview
             string content = FormatContentForPreview(prn, type);
-            var contentRect = new RectangleF(20, 50, bmp.Width - 40, bmp.Height - 70);
+            var contentRect = new RectangleF(20, 45, bmp.Width - 40, bmp.Height - 65);
             g.DrawString(content, contentFont, Brushes.Black, contentRect);
             
             return bmp;

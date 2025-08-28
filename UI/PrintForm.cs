@@ -14,6 +14,8 @@ namespace LabelPrinterApp.UI
         private ComboBox cboPrinter;
         private TextBox txtStart;
         private NumericUpDown numQty;
+        private DateTimePicker dtpCustomDate;
+        private TextBox txtCustomText;
         private Button btnAuto;
         private Button btnPreview;
         private Button btnPrint;
@@ -32,7 +34,7 @@ namespace LabelPrinterApp.UI
                 Width = 450,
                 Padding = new Padding(8),
                 ColumnCount = 4,
-                RowCount = 7,
+                RowCount = 9, // Increased from 7 to 9 for new fields
                 AutoSize = true,
                 AutoSizeMode = AutoSizeMode.GrowAndShrink
             };
@@ -40,7 +42,7 @@ namespace LabelPrinterApp.UI
             leftTable.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 60));   // main input col
             leftTable.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80));  // button col
             leftTable.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 80));  // button col
-            for (int i = 0; i < 7; i++) leftTable.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+            for (int i = 0; i < 9; i++) leftTable.RowStyles.Add(new RowStyle(SizeType.AutoSize)); // Updated for 9 rows
 
             var lblDesign = new Label { Text = "Select Design:", Anchor = AnchorStyles.Left, AutoSize = true };
             cboDesign = new ComboBox { DropDownStyle = ComboBoxStyle.DropDownList, Dock = DockStyle.Fill };
@@ -62,7 +64,21 @@ namespace LabelPrinterApp.UI
             leftTable.Controls.Add(lblPrinterStatus, 0, 2);
 
             var lblSerial = new Label { Text = "Start Serial:", Anchor = AnchorStyles.Left, AutoSize = true };
-            txtStart = new TextBox { PlaceholderText = "Start Serial", Dock = DockStyle.Fill };
+            txtStart = new TextBox { PlaceholderText = "Enter starting serial number (e.g., 1001)", Dock = DockStyle.Fill };
+            
+            // Add input validation for serial number
+            txtStart.KeyPress += (s, e) => {
+                // Only allow digits and control keys
+                if (!char.IsDigit(e.KeyChar) && !char.IsControl(e.KeyChar))
+                {
+                    e.Handled = true;
+                }
+            };
+            
+            // Add tooltip for additional guidance
+            var toolTip = new ToolTip();
+            toolTip.SetToolTip(txtStart, "Enter the starting serial number for your labels.\nUse 'Auto Resume' to continue from the last printed serial.\nOnly numbers are allowed.");
+            
             var lblQty = new Label { Text = "Quantity:", Anchor = AnchorStyles.Left, AutoSize = true };
             numQty = new NumericUpDown { Minimum = 1, Maximum = 100000, Value = 10, Dock = DockStyle.Fill };
             leftTable.Controls.Add(lblSerial, 0, 3);
@@ -70,38 +86,76 @@ namespace LabelPrinterApp.UI
             leftTable.Controls.Add(lblQty, 2, 3);
             leftTable.Controls.Add(numQty, 3, 3);
 
+            // Add Custom Date field
+            var lblCustomDate = new Label { Text = "Custom Date:", Anchor = AnchorStyles.Left, AutoSize = true };
+            dtpCustomDate = new DateTimePicker { 
+                Format = DateTimePickerFormat.Short, 
+                Dock = DockStyle.Fill,
+                Value = DateTime.Now
+            };
+            dtpCustomDate.ValueChanged += async (s, e) => await UpdatePreviewAsync();
+            toolTip.SetToolTip(dtpCustomDate, "Select a custom date for labels.\nThis will override system date for {DATE}, {DD}, {MM}, {YYYY}, {YY}, and {CHAR_MM} shortcut codes.");
+            
+            leftTable.Controls.Add(lblCustomDate, 0, 4);
+            leftTable.SetColumnSpan(dtpCustomDate, 3);
+            leftTable.Controls.Add(dtpCustomDate, 1, 4);
+
+            // Add Custom Text field
+            var lblCustomText = new Label { Text = "Custom(LN):", Anchor = AnchorStyles.Left, AutoSize = true };
+            txtCustomText = new TextBox { 
+                PlaceholderText = "Enter custom text for labels", 
+                Dock = DockStyle.Fill 
+            };
+            txtCustomText.TextChanged += async (s, e) => await UpdatePreviewAsync();
+            toolTip.SetToolTip(txtCustomText, "Enter custom text that will replace {CUSTOM_TEXT} in your label design.\nPreview will update automatically as you type.");
+            
+            leftTable.Controls.Add(lblCustomText, 0, 5);
+            leftTable.SetColumnSpan(txtCustomText, 3);
+            leftTable.Controls.Add(txtCustomText, 1, 5);
+
             btnAuto = new Button { Text = "Auto Resume", Dock = DockStyle.Fill };
             btnAuto.Click += (s,e)=> { if (SelectedDesignId!=0) txtStart.Text=(Database.GetLastPrintedSerial(SelectedDesignId)+1).ToString(); };
+            
+            // Add tooltip for Auto Resume button
+            toolTip.SetToolTip(btnAuto, "Automatically set the starting serial to continue from the last printed label for this design.");
             btnPreview = new Button { Text = "Preview", Dock = DockStyle.Fill };
             btnPreview.Click += async (s,e)=> await UpdatePreviewAsync();
             btnPrint = new Button { Text = "Print", Dock = DockStyle.Fill };
             btnPrint.Click += BtnPrint_Click;
             btnTestPrint = new Button { Text = "Test Printer", Dock = DockStyle.Fill };
             btnTestPrint.Click += BtnTestPrint_Click;
-            leftTable.Controls.Add(btnAuto, 0, 4);
-            leftTable.Controls.Add(btnPreview, 1, 4);
-            leftTable.Controls.Add(btnPrint, 2, 4);
-            leftTable.Controls.Add(btnTestPrint, 3, 4);
+            leftTable.Controls.Add(btnAuto, 0, 6);
+            leftTable.Controls.Add(btnPreview, 1, 6);
+            leftTable.Controls.Add(btnPrint, 2, 6);
+            leftTable.Controls.Add(btnTestPrint, 3, 6);
 
             // Add a filler row for spacing
             leftTable.RowStyles.Add(new RowStyle(SizeType.Percent, 100));
 
-            // Create a fixed-size preview panel
+            // Create a enhanced preview panel similar to DesignForm
             var right = new Panel{ Dock = DockStyle.Fill, Padding = new Padding(8) };
-            var previewPanel = new Panel { Dock = DockStyle.Fill, Padding = new Padding(10) };
+            var previewPanel = new Panel { 
+                Dock = DockStyle.Fill, 
+                BackColor = Color.LightGray, 
+                Padding = new Padding(10),
+                AutoScroll = false
+            };
             pbPreview = new PictureBox 
             { 
-                Width = 400, 
-                Height = 300, 
+                Dock = DockStyle.Fill,
+                SizeMode = PictureBoxSizeMode.Zoom,  // Use Zoom for better fitting like DesignForm
                 BorderStyle = BorderStyle.FixedSingle, 
-                SizeMode = PictureBoxSizeMode.StretchImage,
-                Anchor = AnchorStyles.None,
-                BackColor = Color.White
+                BackColor = Color.White,
+                Anchor = AnchorStyles.Top | AnchorStyles.Left | AnchorStyles.Right | AnchorStyles.Bottom
             };
-            // Center the preview in the panel when panel resizes
+            
+            // Add resize handler for better preview fitting
             previewPanel.Resize += (s, e) => {
-                pbPreview.Left = Math.Max(10, (previewPanel.Width - pbPreview.Width) / 2);
-                pbPreview.Top = Math.Max(10, (previewPanel.Height - pbPreview.Height) / 2);
+                if (pbPreview.Image != null)
+                {
+                    pbPreview.Refresh();
+                    pbPreview.Invalidate();
+                }
             };
             previewPanel.Controls.Add(pbPreview);
             right.Controls.Add(previewPanel);
@@ -211,7 +265,12 @@ namespace LabelPrinterApp.UI
             
             if (!int.TryParse(txtStart.Text, out int start)) start = Database.GetLastPrintedSerial(SelectedDesignId) + 1;
             var prnTemplate = Database.GetPrnByDesignId(SelectedDesignId);
-            var prn = ShortcutCodeService.ReplaceShortcutCodes(prnTemplate, start);
+            
+            // Use custom date from DateTimePicker and custom text
+            var customDate = dtpCustomDate.Value;
+            var customText = txtCustomText.Text;
+            var prn = ShortcutCodeService.ReplaceShortcutCodes(prnTemplate, start, customDate, customText);
+            
             var size = Database.GetDesignSize(SelectedDesignId);
             System.Drawing.Image? img = null;
 
@@ -252,7 +311,8 @@ namespace LabelPrinterApp.UI
 
         private Image CreateNoPreviewImage()
         {
-            var bmp = new Bitmap(400, 300);
+            // Create a larger, better proportioned preview
+            var bmp = new Bitmap(600, 400);
             using var g = Graphics.FromImage(bmp);
             g.Clear(Color.White);
             
@@ -260,17 +320,17 @@ namespace LabelPrinterApp.UI
             using var borderPen = new Pen(Color.LightGray, 2);
             g.DrawRectangle(borderPen, 1, 1, bmp.Width - 3, bmp.Height - 3);
             
-            using var titleFont = new Font("Arial", 16, FontStyle.Bold);
-            using var textFont = new Font("Arial", 12);
+            using var titleFont = new Font("Arial", 20, FontStyle.Bold);
+            using var textFont = new Font("Arial", 14);
             
             string message = "No Design Selected";
-            string subMessage = "Please select a design to preview";
+            string subMessage = "Please select a design to preview the label";
             
             var titleSize = g.MeasureString(message, titleFont);
             var textSize = g.MeasureString(subMessage, textFont);
             
             g.DrawString(message, titleFont, Brushes.DarkGray, 
-                (bmp.Width - titleSize.Width) / 2, (bmp.Height - titleSize.Height) / 2 - 20);
+                (bmp.Width - titleSize.Width) / 2, (bmp.Height - titleSize.Height) / 2 - 30);
             g.DrawString(subMessage, textFont, Brushes.Gray, 
                 (bmp.Width - textSize.Width) / 2, (bmp.Height - textSize.Height) / 2 + 20);
                 
@@ -279,24 +339,39 @@ namespace LabelPrinterApp.UI
 
         private Image CreateFormattedPreview(string prn, PrnType type)
         {
-            var bmp = new Bitmap(400, 300);
+            // Create a larger, better quality preview
+            var bmp = new Bitmap(600, 400);
             using var g = Graphics.FromImage(bmp);
             g.Clear(Color.White);
+            g.SmoothingMode = System.Drawing.Drawing2D.SmoothingMode.AntiAlias;
+            g.TextRenderingHint = System.Drawing.Text.TextRenderingHint.ClearTypeGridFit;
             
             // Draw border
             using var borderPen = new Pen(Color.Black, 2);
             g.DrawRectangle(borderPen, 1, 1, bmp.Width - 3, bmp.Height - 3);
             
-            // Draw header
-            using var headerFont = new Font("Arial", 12, FontStyle.Bold);
-            using var contentFont = new Font("Consolas", 8);
+            // Draw header with better styling
+            using var headerFont = new Font("Arial", 16, FontStyle.Bold);
+            using var contentFont = new Font("Consolas", 10);
             
-            string header = $"Label Preview - {type} Format";
-            g.DrawString(header, headerFont, Brushes.DarkBlue, 10, 10);
+            string header = type == PrnType.ZPL 
+                ? "Label Preview - ZPL Format" 
+                : $"Label Preview - {type} Format";
+            var headerColor = type == PrnType.ZPL ? Brushes.DarkBlue : Brushes.DarkGreen;
+            g.DrawString(header, headerFont, headerColor, 15, 15);
             
-            // Draw formatted content
+            // Add serial number info if available
+            var serialMatch = System.Text.RegularExpressions.Regex.Match(prn, @"Serial.*?(\d+)");
+            if (serialMatch.Success)
+            {
+                using var serialFont = new Font("Arial", 12, FontStyle.Italic);
+                string serialInfo = $"Serial Number: {serialMatch.Groups[1].Value}";
+                g.DrawString(serialInfo, serialFont, Brushes.Blue, 15, 45);
+            }
+            
+            // Draw formatted content with better layout
             string content = FormatPrnForDisplay(prn, type);
-            var contentRect = new RectangleF(10, 35, bmp.Width - 20, bmp.Height - 45);
+            var contentRect = new RectangleF(15, 70, bmp.Width - 30, bmp.Height - 85);
             g.DrawString(content, contentFont, Brushes.Black, contentRect);
             
             return bmp;
@@ -329,23 +404,56 @@ namespace LabelPrinterApp.UI
             var lines = zpl.Split(new[] { '\r', '\n' }, StringSplitOptions.RemoveEmptyEntries);
             var formatted = new System.Text.StringBuilder();
             
-            formatted.AppendLine("ZPL Format Detected");
-            formatted.AppendLine("API preview failed - showing formatted code:");
+            formatted.AppendLine("ZPL Code Preview:");
+            formatted.AppendLine("(Live preview via Labelary API failed)");
             formatted.AppendLine();
             
-            foreach (var line in lines.Take(10)) // Show first 10 lines
+            // Show key ZPL information
+            var keyInfo = new System.Text.StringBuilder();
+            foreach (var line in lines)
+            {
+                var trimmedLine = line.Trim();
+                if (trimmedLine.StartsWith("^FD") && !trimmedLine.Contains("{"))
+                {
+                    // Show field data
+                    var data = trimmedLine.Substring(3).Replace("^FS", "");
+                    keyInfo.AppendLine($"Text: {data}");
+                }
+                else if (trimmedLine.StartsWith("^FD") && trimmedLine.Contains("Serial"))
+                {
+                    keyInfo.AppendLine($"Field: {trimmedLine.Substring(3).Replace("^FS", "")}");
+                }
+                else if (trimmedLine.StartsWith("^PW"))
+                {
+                    keyInfo.AppendLine($"Print Width: {trimmedLine.Substring(3)} dots");
+                }
+                else if (trimmedLine.StartsWith("^LL"))
+                {
+                    keyInfo.AppendLine($"Label Length: {trimmedLine.Substring(3)} dots");
+                }
+            }
+            
+            if (keyInfo.Length > 0)
+            {
+                formatted.AppendLine("Label Information:");
+                formatted.Append(keyInfo.ToString());
+                formatted.AppendLine();
+            }
+            
+            formatted.AppendLine("ZPL Commands:");
+            foreach (var line in lines.Take(8)) // Show first 8 lines
             {
                 var trimmedLine = line.Trim();
                 if (!string.IsNullOrWhiteSpace(trimmedLine))
                 {
-                    formatted.AppendLine(trimmedLine);
+                    formatted.AppendLine($"  {trimmedLine}");
                 }
             }
             
-            if (lines.Length > 10)
+            if (lines.Length > 8)
             {
-                formatted.AppendLine("...");
-                formatted.AppendLine($"({lines.Length - 10} more lines)");
+                formatted.AppendLine("  ...");
+                formatted.AppendLine($"  ({lines.Length - 8} more commands)");
             }
             
             return formatted.ToString();
@@ -366,12 +474,16 @@ namespace LabelPrinterApp.UI
             int qty = (int)numQty.Value;
             var prnTemplate = Database.GetPrnByDesignId(SelectedDesignId);
             
+            // Get custom date from DateTimePicker
+            var customDate = dtpCustomDate.Value;
+            var customText = txtCustomText.Text;
+            
             try
             {
                 for (int i = 0; i < qty; i++)
                 {
                     int serial = start + i;
-                    var prn = ShortcutCodeService.ReplaceShortcutCodes(prnTemplate, serial);
+                    var prn = ShortcutCodeService.ReplaceShortcutCodes(prnTemplate, serial, customDate, customText);
                     var ok = PrintingService.PrintRaw(selectedPrinter, prn);
                     if (!ok)
                     {
@@ -380,7 +492,8 @@ namespace LabelPrinterApp.UI
                     }
                     Database.LogPrintedSerial(SelectedDesignId, serial);
                 }
-                MessageBox.Show($"Successfully printed {qty} labels starting from {start} to printer '{selectedPrinter}'");
+                MessageBox.Show($"Successfully printed {qty} labels starting from {start} to printer '{selectedPrinter}'\nUsing custom date: {customDate:dd/MM/yyyy}" + 
+                    (!string.IsNullOrWhiteSpace(customText) ? $"\nCustom text: {customText}" : ""));
                 
                 // Notify that printing is completed to refresh reports
                 PrintCompleted?.Invoke();

@@ -24,7 +24,8 @@ namespace LabelPrinterApp.Services
                 { "{YYYY}", "System Year (e.g., 2025)" },
                 { "{YY}", "System Year Last 2 Digits (e.g., 25)" },
                 { "{CHAR_MM}", "Month Character (01:A, 02:B, 03:C, 04:D, 05:E, 06:F, 07:G, 08:H, 09:I, 10:J, 11:K, 12:L)" },
-                { "{TIME}", "Current Time (e.g., 11:01:25)" }
+                { "{TIME}", "Current Time (e.g., 11:01:25)" },
+                { "{CUSTOM_TEXT}", "Custom text entered in Print Form (e.g., user-defined text)" }
             };
         }
 
@@ -34,8 +35,9 @@ namespace LabelPrinterApp.Services
         /// <param name="prnContent">The PRN content containing shortcut codes</param>
         /// <param name="serialNumber">The serial number to use for {SERIAL} replacement</param>
         /// <param name="customDateTime">Optional custom date/time. If null, uses current system time</param>
+        /// <param name="customText">Optional custom text for {CUSTOM_TEXT} replacement</param>
         /// <returns>PRN content with all shortcut codes replaced</returns>
-        public static string ReplaceShortcutCodes(string prnContent, int serialNumber, DateTime? customDateTime = null)
+        public static string ReplaceShortcutCodes(string prnContent, int serialNumber, DateTime? customDateTime = null, string? customText = null)
         {
             if (string.IsNullOrEmpty(prnContent))
                 return prnContent;
@@ -57,6 +59,7 @@ namespace LabelPrinterApp.Services
             result = result.Replace("{YY}", dateTime.ToString("yy"));
             result = result.Replace("{CHAR_MM}", GetMonthCharacter(dateTime.Month));
             result = result.Replace("{TIME}", dateTime.ToString("HH:mm:ss"));
+            result = result.Replace("{CUSTOM_TEXT}", customText ?? "");
 
             return result;
         }
@@ -171,6 +174,8 @@ namespace LabelPrinterApp.Services
             helpText += $"{"{YY}",-12} → Year Last 2 Digits (e.g., {dateTime:yy})\n";
             helpText += $"{"{CHAR_MM}",-12} → Month Character (e.g., {GetMonthCharacter(dateTime.Month)})\n";
             helpText += $"{"{TIME}",-12} → Current Time (e.g., {dateTime:HH:mm:ss})\n\n";
+            helpText += "CUSTOM FIELDS:\n";
+            helpText += $"{"{CUSTOM_TEXT}",-12} → Custom text from Print Form input\n\n";
             helpText += "Month Characters: 01:A, 02:B, 03:C, 04:D, 05:E, 06:F, 07:G, 08:H, 09:I, 10:J, 11:K, 12:L";
             
             return helpText;

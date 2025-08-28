@@ -20,6 +20,7 @@ The Label Printer App now supports shortcut codes that are automatically replace
 | `{YY}` | Current year (2 digits) | 25 |
 | `{CHAR_MM}` | Month as character | H (for August) |
 | `{TIME}` | Current time (24-hour format) | 14:30:25 |
+| `{CUSTOM_TEXT}` | Custom text from Print Form | User-defined text |
 
 ## Month Character Mapping (`{CHAR_MM}`)
 - 01 (January) → A
