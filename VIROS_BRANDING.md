@@ -26,10 +26,13 @@ This application proudly features **Viros Entrepreneurs** branding throughout th
 ### Application Features
 ✅ **Multi-format PRN support** (ZPL, EPL, CPCL, TSPL, DPL)  
 ✅ **Live preview** with Labelary API integration  
-✅ **Advanced shortcut codes** with serial formatting  
+✅ **Advanced shortcut codes** with serial formatting and custom text  
 ✅ **Comprehensive print logging** and reporting  
+✅ **Excel export functionality** with business analytics  
 ✅ **Password-protected design access**  
 ✅ **Professional Windows Forms interface**  
+✅ **Custom date and text input** for dynamic label content  
+✅ **Multi-printer support** with status monitoring
 
 ### Company Information
 - **Company**: Viros Entrepreneurs

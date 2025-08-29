@@ -219,7 +219,7 @@ namespace LabelPrinterApp.Services
             cmd.ExecuteNonQuery();
         }
 
-        public static DataTable GetPrintLogs(string? designFilter = null, int? serialFilter = null)
+        public static DataTable GetPrintLogs(string? designFilter = null, int? serialFilter = null, DateTime? fromDate = null, DateTime? toDate = null)
         {
             using var conn = new SqliteConnection(ConnectionString);
             conn.Open();
@@ -238,6 +238,18 @@ namespace LabelPrinterApp.Services
             {
                 sql += " AND l.serial_number = @sf ";
                 cmd.Parameters.AddWithValue("@sf", serialFilter.Value);
+            }
+            if (fromDate.HasValue)
+            {
+                sql += " AND datetime(l.printed_at) >= datetime(@from) ";
+                cmd.Parameters.AddWithValue("@from", fromDate.Value.ToString("yyyy-MM-dd HH:mm:ss"));
+            }
+            if (toDate.HasValue)
+            {
+                // Add 23:59:59 to include the entire end date
+                var endOfDay = toDate.Value.Date.AddDays(1).AddSeconds(-1);
+                sql += " AND datetime(l.printed_at) <= datetime(@to) ";
+                cmd.Parameters.AddWithValue("@to", endOfDay.ToString("yyyy-MM-dd HH:mm:ss"));
             }
             sql += " ORDER BY datetime(l.printed_at) DESC;";
             cmd.CommandText = sql;

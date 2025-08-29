@@ -16,9 +16,10 @@ Features:
 - Admin user login opens directly to Print Label tab for quick access
 - Password protection on Design Label tab for ALL users (including admin)
 - Design: browse .prn, edit, live preview via Labelary API (ZPL only), scrollable preview panel
-- Print Label: select design, quantity, start serial, preview, print (stub), logs saved
-- Reports: view print logs, filter by design name or serial, reprint selected
-- Enhanced shortcut codes: {SERIAL}, {SERIAL1-5}, {DATE}, {TIME}, {CHAR_MM}, etc.
+- Print Label: select design, quantity, start serial, custom date/text, preview, print (stub), logs saved
+- Reports: view print logs, filter by design name or serial, reprint selected, Excel export functionality
+- Enhanced shortcut codes: {SERIAL}, {SERIAL1-5}, {DATE}, {TIME}, {CHAR_MM}, {CUSTOM_TEXT}, etc.
+- Excel Export: Professional reports with statistics and business analytics
 
 Build & Run (CLI):
   cd LabelPrinterApp

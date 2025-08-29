@@ -8,5 +8,6 @@
   </PropertyGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.7" />
+    <PackageReference Include="EPPlus" Version="5.8.14" />
   </ItemGroup>
 </Project>

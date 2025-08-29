@@ -241,3 +241,13 @@ D:\software viros\LabelPrinterApp - Copy\obj\Debug\net9.0-windows\refint\LabelPr
 D:\software viros\LabelPrinterApp - Copy\obj\Debug\net9.0-windows\LabelPrinterApp.pdb
 D:\software viros\LabelPrinterApp - Copy\obj\Debug\net9.0-windows\LabelPrinterApp.genruntimeconfig.cache
 D:\software viros\LabelPrinterApp - Copy\obj\Debug\net9.0-windows\ref\LabelPrinterApp.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\EPPlus.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.Extensions.Configuration.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.Extensions.Configuration.Abstractions.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.Extensions.Configuration.FileExtensions.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.Extensions.Configuration.Json.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.Extensions.FileProviders.Abstractions.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.Extensions.FileProviders.Physical.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.Extensions.FileSystemGlobbing.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.Extensions.Primitives.dll
+D:\software viros\LabelPrinterApp - Copy\bin\Debug\net9.0-windows\Microsoft.IO.RecyclableMemoryStream.dll
