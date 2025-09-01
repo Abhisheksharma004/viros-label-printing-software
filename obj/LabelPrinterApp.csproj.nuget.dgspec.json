@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "D:\\software viros\\LabelPrinterApp - Copy\\LabelPrinterApp.csproj": {}
+    "D:\\software viros\\LabelPrinterApp\\LabelPrinterApp.csproj": {}
   },
   "projects": {
-    "D:\\software viros\\LabelPrinterApp - Copy\\LabelPrinterApp.csproj": {
+    "D:\\software viros\\LabelPrinterApp\\LabelPrinterApp.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\software viros\\LabelPrinterApp - Copy\\LabelPrinterApp.csproj",
+        "projectUniqueName": "D:\\software viros\\LabelPrinterApp\\LabelPrinterApp.csproj",
         "projectName": "LabelPrinterApp",
-        "projectPath": "D:\\software viros\\LabelPrinterApp - Copy\\LabelPrinterApp.csproj",
+        "projectPath": "D:\\software viros\\LabelPrinterApp\\LabelPrinterApp.csproj",
         "packagesPath": "C:\\Users\\Abhishek Sharma\\.nuget\\packages\\",
-        "outputPath": "D:\\software viros\\LabelPrinterApp - Copy\\obj\\",
+        "outputPath": "D:\\software viros\\LabelPrinterApp\\obj\\",
         "projectStyle": "PackageReference",
         "fallbackFolders": [
           "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"

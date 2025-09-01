@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("LabelPrinterApp")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+b847d9b746346de92e25cef030c05727fd823093")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+66deb87fb52e267cd48b7105ad25180a03174ed9")]
 [assembly: System.Reflection.AssemblyProductAttribute("LabelPrinterApp")]
 [assembly: System.Reflection.AssemblyTitleAttribute("LabelPrinterApp")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

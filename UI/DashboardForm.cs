@@ -17,8 +17,8 @@ namespace LabelPrinterApp.UI
         public DashboardForm(string username = "")
         {
             Text = string.IsNullOrWhiteSpace(username) 
-                ? "Label Printer - Dashboard" 
-                : $"Label Printer - Dashboard (Logged in as: {username})";
+                ? "Label Printer - Dashboard (Siddharth Grease & Lubes Pvt. Ltd.)" 
+                : $"Label Printer - Dashboard(Siddharth Grease & Lubes Pvt. Ltd.) (Logged in as: {username})";
             Width = 1200; Height = 800;
             StartPosition = FormStartPosition.CenterScreen;
             MinimumSize = new System.Drawing.Size(1000, 600);

@@ -12,7 +12,7 @@ namespace LabelPrinterApp.UI
 
         public LoginForm()
         {
-            Text = "Login";
+            Text = "Login - Siddharth Grease & Lubes Pvt. Ltd.";
             Width = 320; Height = 200;
             StartPosition = FormStartPosition.CenterScreen;
             FormBorderStyle = FormBorderStyle.FixedDialog;

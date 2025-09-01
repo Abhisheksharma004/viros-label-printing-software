@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "/1xmfF/MAf4=",
+  "dgSpecHash": "Q/A7FRAFpB4=",
   "success": true,
-  "projectFilePath": "D:\\software viros\\LabelPrinterApp - Copy\\LabelPrinterApp.csproj",
+  "projectFilePath": "D:\\software viros\\LabelPrinterApp\\LabelPrinterApp.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\Abhishek Sharma\\.nuget\\packages\\epplus\\5.8.14\\epplus.5.8.14.nupkg.sha512",
     "C:\\Users\\Abhishek Sharma\\.nuget\\packages\\microsoft.data.sqlite\\8.0.7\\microsoft.data.sqlite.8.0.7.nupkg.sha512",
